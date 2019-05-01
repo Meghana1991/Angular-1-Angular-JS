@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html  ng-app="mycustom">
+  <head>
+      <!--The Unicode Standard covers (almost) all the characters, punctuations, and symbols in the world.
+      -->
+      <meta charset="utf-8">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+      <script src="common.js"></script>
+  </head>
+  <body>
+      <div ng-controller = "mycustomController">
+        <select>
+          <option ng-repeat="m in myObj">{{m.name}}</option>
+        </select>      
+      </div>
+  </body>
+</html>

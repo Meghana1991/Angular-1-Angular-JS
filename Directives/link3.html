@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<body ng-app="linkApp">
+<div ng-controller="myController">
+
+    <div ng-repeat="i in [0,1,2]">
+        <simple>
+            <div>Inner content</div>
+        </simple>
+    </div>
+
+</div>
+<script>
+/**Compile and Link Function**/
+
+/**
+Compile - 
+Angular parser works in 3 steps:-
+
+Step 1:- HTML browser parses the HTML and creates a DOM (Document Object Model).
+Step 2:- Angular framework runs over this DOM looks at the Angular directives and manipulates the DOM accordingly.
+Step 3:- This manipulated is then rendered as HTML in the browser.
+**/
+
+/**
+Now the above angular parsing is not so simple as it looks to be. It occurs in two phases “Compile” and “Link”. First the compile phase occurs then the link phase.
+**/
+/**
+In compile phase the angular parser starts parsing the DOM and whenever the parser encounters a directive it create a function. These functions are termed as template or compiled functions. In this phase we do not have access to the $scope data.
+
+In the link phase the data i.e. ($scope) is attached to the template function and executed to get the final HTML output.
+**/
+
+//-----------------------------------------------------------------------------------------------------
+
+/**
+COMPILE called <div>{{label}}<div ng-transclude=""></div></div>
+
+-> Compile executes once
+-> In Compile phase - Angular has already added the directive template, but has not performed any transclusion or setup the data binding.It looks like this when we check the arguments
+	"<div class="ng-binding">{{label}}<div ng-transclude=""></div></div>"
+-> At this point it is safe for the code inside the compile function to manipulate the element, however it is not a place where you want the code to wire up event handlers
+-> Since we have used ng-repeat, the clone of the above compiled code 3 times will happen only in the link phase.
+-> The idea behind the compilation step is to allow for one time DOM manipulation before the cloning – a performance optimization
+**/
+
+/**
+CONTROLLER called <div class="ng-binding">{{label}}<div ng-transclude=""></div></div>
+PRE LINK <div class="ng-binding">{{label}}<div ng-transclude=""></div></div>
+link3.html:69 POST LINK <div class="ng-binding">{{label}}<div ng-transclude="">
+            <div class="ng-scope">Inner content</div>
+        </div></div>
+-> The order is compile, controller, pre, then post.
+-> The first function to execute for each instance is the controller function. It is here where the code can initialize a scope object as any good controller function will do.
+-> Note the controller can also take an $element argument and receive a reference to the simple element clone that will appear in the DOM.
+
+The element will look just like the element in the previous compile case because the framework hasn’t performed the transclusion or setup data binding, but it is the element that will live in the DOM, unlike the element reference in compile.
+
+However, we try to keep controllers from referencing elements directly. You generally want to limit direct element interaction to the post link function.
+
+In most cases, you would typically use link() over postLink() where all that is needed is basic DOM manipulation (very common). If, for example you needed to manipulate the model or $scope before it is linked with the view, the preLink() function is where you can do that.
+
+<level-one>  
+    <level-two>
+        <level-three>
+            Hello {{name}}         
+        </level-three>
+    </level-two>
+</level-one> 
+
+// COMPILE PHASE
+// levelOne:    compile function is called
+// levelTwo:    compile function is called
+// levelThree:  compile function is called
+
+// PRE-LINK PHASE
+// levelOne:    pre link function is called
+// levelTwo:    pre link function is called
+// levelThree:  pre link function is called
+
+// POST-LINK PHASE (Notice the reverse order)
+// levelThree:  post link function is called
+// levelTwo:    post link function is called
+// levelOne:    post link function is called
+
+in the compilation order section, pre-link functions are called parent-then-child, whereas post-link functions are called child-then-parent.
+
+The pre-link function is rarely used, but can be useful in special scenarios; for example, when a child controller registers itself with the parent controller, but the registration has to be in a parent-then-child fashion (ngModelController does things this way).
+**/
+var app = angular.module("linkApp",[]);
+app.directive("simple",function(){
+	//prepare an object and return it
+	return {
+		restrict : "EA",
+		transclude : true,
+	    template:"<div>{{label}}<div ng-transclude></div></div>",
+		compile : function(element,attrs){
+			console.log("COMPILE called",element.html())
+			return {
+				pre : function(scope,element,attrs,controller,transcludeFn){
+					console.log("PRE LINK",element.html())
+				},
+				post : function(scope,element,attrs,controller,transcludeFn){
+					console.log("POST LINK",element.html())
+				}
+			}
+		},
+		controller: function($scope,$element){
+			console.log("CONTROLLER called",$element.html());
+		}
+	};
+});
+app.controller("myController",function($scope){
+	console.log("CONTROLLER called")
+});
+
+</script>
+</body>
+</html>

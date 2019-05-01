@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<body ng-app="linkApp">
+<div ng-controller = "myController">
+	<p>Controller variable name is - <b>{{name}}</b></p>
+	<p>Controller variable age is - <b>{{age}}</b></p><hr>
+	<!-- To use the controller variables inside the directive without actually modifying the actual controller variables -->
+	<link-me name="{{name}}" age="age" func="simpleFunc()"></link-me>
+	<input type="button" value="From Controller" ng-click = "simpleFunc()"></button>
+</div>
+<script>
+/**
+For @ Once we have pushed the name to the directive, it is just like a text. It wont have link with the actual controller. It is just dummy
+**/
+
+/**
+For = here we are actually giving the reference of the controller's age variable and not just the value.SO any modification in directive changes the controller and vice versa,So you might ask scope:true also inherits from parent controller, but y we need scope =? In case of scope : true we are inheriting all the properties but in case of scope = we are inherting only one variable. Giving full right to one variable (in example)
+**/
+
+/**
+For & is for functions and its one bind **/
+
+var app = angular.module("linkApp",[]);
+app.directive("linkMe",function(){
+	//prepare an object and return it
+	return {
+		restrict : "EA",
+		scope : {
+			name : '@',
+			age : '=',
+			func : '&'
+		},
+		template : '<p> Value of name in directive - {{name}}</p>Enter your name - <input type="text" ng-model= "name" /><br/><p> Value of age in directive - {{age}}</p>Enter your age - <input type="text" ng-model= "age" /><br/><p>Alert from directive - <input type="button" value="From Directive" ng-click="func()"/></p><hr>'
+	};
+});
+
+app.controller("myController",function($scope){
+	$scope.name = "name";
+	$scope.age = "100";
+	$scope.simpleFunc = function(){
+		alert($scope.name);
+	}
+});
+
+</script>
+</body>
+</html>

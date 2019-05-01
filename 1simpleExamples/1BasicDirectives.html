@@ -1,0 +1,41 @@
+<!-- 
+- HTML + new markup = AngularJS template
+- The DOM which is rendered is called view
+- The directives like ng-app will add special functionality to the html 
+elements
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Example - example-guide-concepts-1-production</title>
+
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
+</head>
+<body >
+<!-- ng-app is used to tell which module to refer -->
+  <div ng-app = "useMe" ng-init="qty=1;cost=2">
+  <b>Invoice:</b>
+  <div>
+  <!-- Scopes are the object that refers to the application
+  - If i want a variable to be available in the scope then use ng-model and assign this ng-model directive to the html element and also,ng-model will als have all the variables attached in the scope via the JS files.
+  -->
+    Quantity: <input type="number" min="0" ng-model="qty">
+  </div>
+  <div>
+    Costs: <input type="number" min="0" ng-model="cost">
+  </div>
+  <div>
+  <!-- When compiler comes across the new markup in the HTML like the directives or the {{}} then it will compile it and replaces with evaluated value -->
+    <b>Total:</b> {{qty * cost | currency}}
+  </div>
+  <!--The important thing in the example is that Angular provides live bindings: Whenever the input values change, the value of the expressions are automatically recalculated and the DOM is updated with their values. The concept behind this is two-way data binding.
+  -->
+</div>
+</body>
+<!--
+One way binding is whenever there is change in the model, the view doesn't get reflected and vice versa.
+Two way binding is Any changes to the view are immediately reflected in the model, and any changes in the model are propagated to the view
+-->
+</html>

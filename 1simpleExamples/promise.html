@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Promises</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js">
+		</script>
+</head>
+<body>
+	<div ng-app="myApp" ng-controller="myCtrl">
+		
+	</div>
+	<script>
+	var app = angular.module("myApp",[]);
+
+	app.controller("myCtrl",['$scope','$http',function($scope,$http){
+		//alert("hi")
+		$http.get('http://localhost:8080/cvpservice/ztp/getTopologyDashboard.do').then(function(response){
+			alert("success");
+		},function(){ 
+			alert("failure");
+		});
+	}]);
+
+	/**
+	$http.get('http://localhost:8080/cvpservice/ztp/getTopologyDashboard.do')
+	returns a promise by angular default
+	promise may be resolved or rejected
+
+	If we want to use the promise value then use `then' which accepts 2 callbacks
+
+	().then(function(){},function(){})
+		Ie
+	promise.then(success func,failure func)
+
+	---------------------------------------------------------------------------
+	If you manually want to do some actions after some http call example then
+
+	create a promise by yourself
+
+	var myPromise = $q.defer();
+	$http.get(...).then(
+	function(response){
+	 //success case
+	 //here i want to call one more function which might be an api or may be normal function
+	 //so i will be resolving this response
+	
+		myPromise.resolve(response);
+
+	 //so this will be our manual promise 
+	 //this will go and check where it is used.
+		
+	},function(){
+	
+	});
+
+	// some where in my controller i have this function
+	$scope.myfunc = function(){
+		//here check that if response is recieved from the server then execute my code
+
+		if(myPromise){
+			//here i can directly write my code but i dont know whether the response recieved is success or failure scneario so I need to use the `then'
+
+			myPromise.then(function(){
+				//here comes my code which should be executed for positive
+			})
+		}
+	}
+
+	so overall conclusion
+	promiseObj.then where .then is to know whether the promise is rejected or resolved
+	*/
+	</script>
+</body>
+</html>

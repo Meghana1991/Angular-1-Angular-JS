@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<body ng-app="myApp">
+
+<!--
+1) It is used for 2 way binding where the change reflects across
+2) The reason behind this feature is constructing two-way data binding between the directive and the page elements or controllers
+3) In this scope type, scope variables(model) are passed instead of the values, which means that we will not pass {{message}}, we will pass message instead
+-->
+
+<div ng-controller = "myController">
+
+	<!-- I have a input outside a directive -->
+	I have a input outside a directive : <input type="text" ng-model="myName" /><br/>
+
+	<replace-div name="{{myName}}"></replace-div>
+</div>
+
+<script>
+var app = angular.module("myApp", []);
+
+app.controller("myController",['$scope',function($scope){
+	$scope.myName = "myText1";
+}]);
+
+app.directive("replaceDiv",function(){
+	/**
+	*Return an object
+	*/
+	 return {
+	 	restrict : "E",
+	 	scope: {
+	 		name : '='
+	 	},  
+        template : "Input inside the directive<input type='text' ng-model='myName' />"
+    };
+});
+
+
+</script>
+</body>
+</html>

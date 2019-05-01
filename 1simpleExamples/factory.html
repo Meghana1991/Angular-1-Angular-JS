@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Factory</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js">
+		</script>
+	</head>
+	<body>
+	<div ng-app="myApp" ng-controller="myCtrl">
+		<!-- -->
+	</div>
+		<script>
+			//Create a module and controller
+			var mod = angular.module("myApp",[]);
+			
+			//Create a factory
+			mod.factory("myFact",function(){
+				return function () {
+				    var counter = 0;
+				    return function () {return counter += 1;}
+				};
+
+			});
+		
+			//Create a service
+			mod.service("myServ",function(){
+				this.a = function () {
+			   	 	var counter = 0;
+			   	 	return function () {return counter += 1;}
+			  	};
+			});
+
+			//Create a controller
+			mod.controller("myCtrl",['$scope','myFact','myServ',function myCtrl($scope,myFact,myServ){
+				console.log("controller service called");
+				
+				//call the functions now
+				var a = myFact();
+				console.log(a())
+				console.log(a())
+				console.log(a())
+
+				console.log(myServ.a()());
+				console.log(myServ.a()());
+				console.log(myServ.a()());
+			}]);
+
+		</script>
+	</body>
+</html>

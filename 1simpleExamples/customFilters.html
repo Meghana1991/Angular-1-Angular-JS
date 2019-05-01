@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<body>
+
+<ul ng-app="myApp" ng-controller="namesCtrl">
+<li ng-repeat="x in names">
+    {{x | capitalize:2}}
+    <!-- where x is the data to be filtered using the capitalize filter and the parameter passed is 2 which is optional parameter -->
+</li>
+</ul>
+
+<script>
+var app = angular.module('myApp', []);
+app.filter('capitalize', function() {
+    return function(word,index) {
+        var text = '';
+        index = index - 1;
+            for(var i=0;i<=word.length-1;i++){
+                if(i == index){
+                    text = text + word[index].toUpperCase()
+                }else{
+                    text = text + word[i];
+                }
+            } 
+            return text;       
+        }
+    });
+app.controller('namesCtrl', function($scope) {
+    $scope.names = [
+        'Jani',
+        'Carl',
+        'Margareth',
+        'Hege',
+        'Joe',
+        'Gustav',
+        'Birgit',
+        'Mary',
+        'Kai'
+        ];
+});
+</script>
+<p>Make your own filters.</p>
+<p>This filter, called "myFormat", will uppercase every other character.</p>
+</body>
+</html>

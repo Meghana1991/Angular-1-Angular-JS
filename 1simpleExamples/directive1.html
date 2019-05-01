@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<body ng-app="myApp">
+<!-- 
+1) We use directive whenever we need to modify the HTML in the DOM 
+2) Creating the directive for DOM manipulation is the best option eventhough we can do it with controllers etc
+!-->
+<replace-div></replace-div>
+	<div ng-controller = "myController">
+		My Name is {{myName}}
+	</div>
+
+<script>
+var app = angular.module("myApp", []);
+app.controller("myController",['$scope',function($scope){
+	$scope.myName = "SM";
+}]);
+
+app.directive("replaceDiv",function(){
+	/**
+	*Return an object
+	*/
+	 return {
+	 	restrict : "AE",
+        template : "<div>I am a directive {{myName}}</div>"
+        /* If I have to use a directive with different different values then i need to isolate the scope.Otherwise it will be taking the same data for all the appearances of the directive. */	
+    };
+});
+</script>
+</body>
+</html>

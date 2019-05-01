@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script> -->
+	<script src="angular.js"></script>
+	<body>
+		<div ng-app="checkWatchers" ng-controller = "checkWatchersController">
+			<span ng-model="test">{{test}}</span>
+		</div>
+	</body>
+</html>
+
+<script>
+	var module = angular.module("checkWatchers",[]);
+	module.controller("checkWatchersController",function($scope){
+		$scope.test = "hi";
+	});
+	//this page creates 2 watchers including ng-app and ng-model
+</script>

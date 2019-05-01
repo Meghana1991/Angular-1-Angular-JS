@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<body ng-app="linkApp">
+<div class="myClass" link-me></div link-me>
+Name in the html - {{name}}
+
+<script>
+var app = angular.module("linkApp",[]);
+app.directive("linkMe",function(){
+	function linkFunction(scope,elem,attr){
+		//scope is same as the one in controllers
+		//elem is the div reference in the - <div link-me></div link-me>
+		//attr is the extra attrs if any present like class id etc
+		scope.name = "NAME";		
+		elem.bind("click",function(){
+			console.log("Hey "+scope.name+" you clicked me now")
+		});
+		console.log(attr.class)//myClass
+		scope.clickMe = function(param){
+			scope.name = param;
+		}
+	}
+	//prepare an object and return it
+	return {
+		restrict : "EA",
+		template : "Name in Template == {{name}}<br/><button ng-click=\"clickMe(\'Changed You\')\">Click me Also now?</button>",
+		// Usually if you have to do any DOM manipulations.Directives that want to modify the DOM typically use the link option to register DOM listeners as well as update the DOM
+		link : linkFunction,
+	};
+});
+</script>
+</body>
+</html>

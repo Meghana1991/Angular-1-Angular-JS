@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html  ng-app="routing">
+  <head>
+      <!--The Unicode Standard covers (almost) all the characters, punctuations, and symbols in the world.
+      -->
+      <meta charset="utf-8">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+      <script src="../angular.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
+  </head>
+  <body>
+      <ul>
+        <li><a href="#">HOME</li>
+        <li><a href="#/about">ABOUT</li>
+        <li><a href="#/contact">CONTACT</li>
+        <li><a href="#/contact/123">CONTACT param</li>
+        <li><a href="#/co">Otherwise case as we have not written `when`</li>
+      </ul>
+
+      <div ng-view>
+        <!-- Content comes here now -->
+      </div>
+
+      <script>
+          var module = angular.module("routing",['ngRoute']);
+
+          module.config(function($routeProvider){
+            $routeProvider
+            .when('/about',{
+                template : "Hey About Page or About template",
+                // controller : 'aboutController'
+            }).
+            when('/contact',{
+                template : 'contact.html',
+                controller : 'contactController'
+            }).
+            when('/contact/:param',{
+                template : "Contact with Param givn",
+                controller : 'contactController'
+            }).
+            otherwise({
+              redirectTo : '/'
+            });
+          });
+
+          module.controller("contactController",function($scope,$routeParams){
+            console.log($routeParams.param); //123
+          });
+      </script>
+  </body>
+</html>

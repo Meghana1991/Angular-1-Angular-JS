@@ -1,0 +1,576 @@
+1) What is responsive ?
+Responsive Web design is the approach that suggests that design and development should respond to the user’s behavior and environment based on screen size, platform and orientation. The practice consists of a mix of flexible grids and layouts, images and an intelligent use of CSS media queries. 
+
+2) What is SPA?
+-Handling the content of the page without any page loads or page refreshes or any new page.
+-Assume I have a  a website having tabs like home, contact, news, feedback etc. In traditional way we most of the time open new pages when clicking on the tabs and the new pages would in turn have redudant code and minor changes. In angular we just load the contents of the div whenever the route changes ie when the user clicks on any tabs we change the route and according load the contents of the div.
+-Say there is a div tag and everytime we modify the contents of the div tag instead of opening a new page or refreshing the entire page.
+
+2)AngularJS
+
+What is AngularJS?
+It is a structural framework for dynamic web apps.It lets us use html as template language and extending the html tags to express your application's components clearly
+ 
+3)What is MVC in AngularJS
+Model is responsible for the application data
+View is the HTML part/ or the part which user views
+Controller is for fetching the data from model to the view and vice versa.
+
+4)What is data-binding
+
+Model -> view 
+1-way they merge template and model components together into a view. After the merge occurs, changes to the model or related sections of the view are NOT automatically reflected in the view. Worse, any changes that the user makes to the view are not reflected in the model. This means that the developer has to write code that constantly syncs the view with the model and the model with the view.
+
+Model <-> view
+2-way Any changes to the view are immediately reflected in the model, and any changes in the model are propagated to the view
+
+5)Scope is an object that refers to the application model. It is an execution context for expressions,Scope is the glue between application controller and the view
+
+6)Scope is the glue between application controller and the view. During the template linking phase the directives set up $watch expressions on the scope.The $watch allows the directives to be notified of property changes, which allows the directive to render the updated value to the DOM.
+
+7)The location where the root scope is attached to the DOM is defined by the location of ng-app directive
+
+8)Scope Cycle/ Scope Life Cycle
+
+When ng-app directive is linked to the HTML DOM, then the rootscope is created.
+
+The controllers and directives creates new child scopes.
+
+The scopes will have watchers($watch) registered with directives(ng-*).
+
+These watchers will propogate the model values to the DOM.
+
+When the browser calls into JavaScript the code executes outside the AngularJS execution context, which means that AngularJS is unaware of model modifications. To properly process model modifications the execution has to enter the AngularJS execution context using the $apply method. Only model modifications which execute inside the $apply method will be properly accounted for by AngularJS. For example if a directive listens on DOM events, such as ng-click it must evaluate the expression inside the $apply method.
+
+After evaluating the expression, the $apply method performs a $digest. In the $digest phase the scope examines all of the $watch expressions and compares them with the previous value. This dirty checking is done asynchronously. This means that assignment such as $scope.username="angular" will not immediately cause a $watch to be notified, instead the $watch notification is delayed until the $digest phase. This delay is desirable, since it coalesces multiple model updates into one $watch notification as well as guarantees that during the $watch notification no other $watches are running. If a $watch changes the value of the model, it will force additional $digest cycle.
+
+At the end of $apply, Angular performs a $digest cycle on the root scope, which then propagates throughout all child scopes. During the $digest cycle, all $watched expressions or functions are checked for model mutation and if a mutation is detected, the $watch listener is called.
+
+Scope Destruction - 
+When child scopes are no longer needed, it is the responsibility of the child scope creator to destroy them via scope.$destroy() API. This will stop propagation of $digest calls into the child scope and allow for memory used by the child scope models to be reclaimed by the garbage collector.
+
+When I am trying to data-bind the variable in controller to the view(html) then a watch is created internally for the variable in scope.Then the Angular calls the digest cycle at some key point of the application then This function iterates through all watches and checks if any of the watched variables have changed. If a watched variable has changed, a corresponding listener function is called. The listener function does whatever work it needs to do, for instance changing an HTML text to reflect the new value of the watched variable. Thus, the $digest() function is what triggers the data binding to update.
+
+The $scope.$apply() function is used to execute some code, and then call $scope.$digest() after that, so all watches are checked and the corresponding watch listener functions are called. The $apply() function is useful when integrating AngularJS with other code
+  
+$scope.$apply is designed for telling Angular that a Model change has occurred outside of its lifecycle. 
+
+We all use third party plugins, and often the ones we use have their own event system and make DOM updates without Angular knowing. That’s exactly where the $scope.$apply method comes in to help. After these updates occur, calling $scope.$apply kicks off the $digest loop again and Angular pulls in values that were updated outside of its core.
+
+AngularJS modifies the normal JavaScript flow by providing its own event processing loop. This splits the JavaScript into classical and AngularJS execution context. Only operations which are applied in the AngularJS execution context will benefit from AngularJS data-binding, exception handling, property watching, etc... You can also use $apply() to enter the AngularJS execution context from JavaScript. Keep in mind that in most places (controllers, services) $apply has already been called for you by the directive which is handling the event. An explicit call to $apply is needed only when implementing custom event callbacks, or when working with third-party library callbacks.
+
+Enter the AngularJS execution context by calling scope.$apply(stimulusFn), where stimulusFn is the work you wish to do in the AngularJS execution context.
+
+9)ng-app is used to tell the compiler that the code inside this would be treated as Angular code.The ng-app directive on <div> element tells AngularJS that the <div> element is the "owner" of an AngularJS application.
+
+10)ng-model will actually bind the html view to the controller/application data.
+
+11)ng-init will initialise the variables during the load of the controller.
+
+12)ng-bind will actually help in binding the application data(controller) to the view(html).
+{{}} expression will also do the same task. 
+Which is better here? and what is the difference?
+ng-bind is better than the {{}} because the ng-bind put the variable in the watch list and only when there is a model change the data get pushed to view.
+{{}} will interpolate the expression every time (I guess it is the angular cycle) and push the value, even if the value changed or not.Also,
+While your angularjs is bootstrapping, the user might see your placed brackets in the html. This can be handled with ng-cloak
+
+13)To reduce memory consumption and improve performance it is a good idea to limit the number of watches on a page to 2,000. A utility called ng-stats can help track your watch count and digest cycles.
+The open-source utility ng-stats gives developers insight into the number of watches Angular is managing, as well as the frequency and duration of digest cycles over time.
+
+14)The key concept behind these performance considerations is reducing the number of $$watchers inside Angular to improve the $digest cycle’s performance
+
+-These are crucial to keeping our application state fast and responsive for the user
+-Each time a Model is updated, either through user input in the View, or via service input to the Controller, Angular runs something called a $digest cycle.
+-This cycle is an internal execution loop that runs through your entire application’s bindings and checks if any values have changed.
+-If values have changed, Angular will also update any values in the Model to return to a clear internal state
+- When we create data-bindings with AngularJS, we’re creating more $$watchers and $scope Objects, which in turn will take longer to process on each $digest
+-we need to be mindful of how many scopes and bindings we create, as these all add up quickly - each one being checked per $digest loop.
+
+15)How do you share data between controllers?
+Create an AngularJS service that will hold the data and inject it inside of the controllers.
+
+Using a service is the cleanest, fastest and easiest way to test.
+However, there are couple of other ways to implement data sharing between controllers, like:
+– Using events
+– Using $parent, nextSibling, controllerAs, etc. to directly access the controllers
+– Using the $rootScope to add the data on (not a good practice)
+The methods above are all correct, but are not the most efficient and easy to test.
+
+16)What is the difference between ng-show/ng-hide and ng-if directives?
+ng-show/ng-hide will always insert the DOM element, but will display/hide it based on the condition. ng-if will not insert the DOM element until the condition is not fulfilled.
+
+ng-if is better when we needed the DOM to be loaded conditionally, as it will help load page bit faster compared to ng-show/ng-hide.
+
+17)What is a digest cycle in AngularJS?
+In each digest cycle Angular compares the old and the new version of the scope model values. The digest cycle is triggered automatically. We can also use $apply() if we want to trigger the digest cycle manually.
+
+18)How would you specify that a scope variable should have one-time binding only?
+By using “::” in front of it. This allows the check if the candidate is aware of the available variable bindings in AngularJS.
+
+19)Explain how $scope.$apply() works
+$scope.$apply re-evaluates all the declared ng-models and applies the change to any that have been altered (i.e. assigned to a new value)
+Explanation: $scope.$apply() is one of the core angular functions that should never be used explicitly, it forces the angular engine to run on all the watched variables and all external variables and apply the changes on their values
+
+20)What makes the angular.copy() method so powerful?
+It creates a deep copy of the variable.
+
+A deep copy of a variable means it doesn’t point to the same memory reference as that variable. Usually assigning one variable to another creates a “shallow copy”, which makes the two variables point to the same memory reference. Therefore if we change one, the other changes as well.
+
+21)What is scope ?
+It is an execution context for expressions. Scopes are arranged in hierarchical structure which mimic the DOM structure of the application. Scopes can watch expressions and propagate events. Scopes are objects that refer to the model. They act as glue between controller and view.
+
+Angular scopes prototypically inherit from their parent scope, all the way up to the root scope of the application. As a result, assigning values directly on the scope makes it easy to share data across different parts of the page and create interactive applications. While this approach works for prototypes and smaller applications, it quickly leads to tight coupling and difficulty to reason about changes in our data model.
+
+22)What is a singleton pattern and where we can find it in Angularjs?
+We can find singleton pattern in angular in dependency injection and in the services.
+In a sense, if you do 2 times ‘new Object()‘ without this pattern, you will be alocating 2 pieces of memory for the same object. With singleton pattern, if the object exists, you reuse it.
+
+23)Which Angularjs version am i using?
+In console type this
+> angular.version.full //1.4.4
+
+24)Why are components ?
+What if we want to reuse the same functionality in a different part of our application ?
+We would need to duplicate the whole template (including the controller). This is error-prone and hurts maintainability.
+The scope, that glues our controller and template together into a dynamic view, is not isolated from other parts of the page. What this means is that a random, unrelated change in a different part of the page (e.g. a property-name conflict) could have unexpected and hard-to-debug side effects on our view.
+
+25)Components to the rescue!
+Since this combination (template + controller) is such a common and recurring pattern, Angular provides an easy and concise way to combine them together into reusable and isolated entities, known as components. Additionally, Angular will create a so called isolate scope for each instance of our component, which means no prototypal inheritance and no risk of our component affecting other parts of the application or vice versa.
+
+26)Dependency Injection?
+Components such as services, directives, filters, and animations are defined by an injectable factory method or constructor function. These components can be injected with "service" and "value" components as dependencies.
+
+Controllers are defined by a constructor function, which can be injected with any of the "service" and "value" components as dependencies, but they can also be provided with special dependencies. See Controllers below for a list of these special dependencies.
+Dependency injection helps to make your web applications both well-structured (e.g. separate entities for presentation, data, and control) and loosely coupled (dependencies between entities are not resolved by the entities themselves, but by the DI subsystem). As a result, applications are easier to test as well.
+$http is just one of several built-in Angular services that handle common operations in web applications. Angular injects these services for you.
+
+27) ng-src directive. 
+That directive prevents the browser from treating the Angular {{ expression }} markup literally, and initiating a request to an invalid URL (http://localhost:8000/{{phone.imageUrl}}), which it would have done if we had only specified an attribute binding in a regular src attribute (<img src="{{phone.imageUrl}}">). Using the ngSrc directive, prevents the browser from making an HTTP request to an invalid location.
+
+28)angular.element 
+angular.element is an alias for the jQuery function.It is equivalent to the 
+$('.hide-search').css('display', 'inline-block');
+angular.element('.hide-search').css('display', 'inline-block'); or just angular.element('.hide-search')
+
+29)angular.equals
+Both objects or values pass === comparison.
+Both objects or values are of the same type and all of their properties are equal by comparing them with angular.equals.
+Both values are NaN. (In JavaScript, NaN == NaN => false. But we consider two NaN as equal)
+
+30)angular.extend
+Extends the destination object dst by copying own enumerable properties from the src object(s) to dst. You can specify multiple src objects. If you want to preserve original objects, you can do so by passing an empty object as the target: var object = angular.extend({}, object1, object2).
+
+31)angular.forEach
+angular.forEach(values,function(value,key){
+	...
+});
+angular.forEach(rows,function(value){
+	...
+});
+
+32)Factories vs Services
+
+Factory returns an object
+Service deals with 'this'
+
+app.service('myService', function() {
+
+  // service is just a constructor function
+  // that will be called with 'new'
+
+  this.sayHello = function(name) {
+     return "Hi " + name + "!";
+  };
+});
+
+app.factory('myFactory', function() {
+
+  // factory returns an object
+  // you can run some code before
+
+  return {
+    sayHello : function(name) {
+      return "Hi " + name + "!";
+    }
+  }
+});
+
+Service : returns the actual function: Useful for sharing utility functions that are useful to invoke by simply appending () to the injected function reference.
+Factory: Returns a concrete object that can be immediately used. In Java Analogy a Factory returns a Java Object.
+
+.service - registered function will be invoked as a constructor (aka 'newed')
+.factory - registered function will be invoked as a simple function
+
+where to place script tag ?
+
+Place library script such as the jQuery library in the head section.
+Place normal script in the head unless it becomes a performance/page load issue.
+Place script associated with includes, within and at the end of that include. One example of this is .ascx user controls in asp.net pages - place the script at the end of that markup.
+Place script that impacts the render of the page at the end of the body (before the body closure).
+do NOT place script in the markup such as <input onclick="myfunction()"/> - better to put it in event handlers in your script body instead.
+If you cannot decide, put it in the head until you have a reason not to such as page blocking issues.
+
+----------------------------------------------------------------------------------------------
+Factory vs service 
+(check example)
+
+33) Factory - name assume as myFact
+Create a obj
+var fact = {}
+
+Attach properties and functions to this
+fact.myVar = "Hi";
+fact.myFunc = function(){}
+
+Return the object
+return fact;
+
+Attach to any controllers to make it available in the controller
+modName.controller("myController",["$scope",function($scope,myFact){
+  ...
+}]);
+
+When you’re using a Factory you create an object, add properties to it, then return that same object. When you pass this service into your controller, those properties on the object will now be available in that controller through your factory
+
+https://www.youtube.com/watch?v=aqY5H95DZ8w
+
+34) Service - name assume as myServ
+Service is instantiated with `new` keyword. 
+We need to attach properties to `this` object
+
+this.myVar = 'Hi'
+this.myFunc= function(){}
+
+the service will return the `this`
+
+35) Providers -
+We use providers only for the main reason that we can inject it in the config. 
+This is of huge importance if you’re needing to alter some portion of your service object before it’s available everywhere else in your application
+Exposes an API for application-wide configuration that must be made before the application starts.
+Use a provider when you want to provide module-wide configuration for your service object before making it available.
+Example : In .config you can only use providers (e.g. $routeProvider)
+
+36) Custom Directives
+Custom directives are used in AngularJS to extend the functionality of HTML. 
+Avoiding the code duplication
+                              HIGHLIGHTS
+- A attr, C class, M comment, E element
+- Scopes -
+
+scope : {} //isolates scope
+
+scope : {message : '@'}     
+// to pass a value/ binding to the directive from template
+<notification message="{{message}}"></notification> 
+where message is either from the ng-model(template) or set in controller
+//It doesn't do 2 way binding in this case as we are assigning the value and not the model.
+This type of scope is used for passing value to the directive scope.
+
+scope : {message : '='}
+// "=" Scope: In this scope type, scope variables are passed instead of the values, which means that we will not pass {{message}}, we will pass message instead. The reason behind this feature is constructing two-way data binding between the directive and the page elements or controllers.
+//This binds
+<span>This is the textbox on the page</span>
+<input type="text" ng-model="commentText"/>
+<br/>
+<span>This is the textbox on the directive</span>
+<book-comment text="commentText"></book-comment>
+
+scope : {like : '&'}
+"&" Scope: We are able to pass the value, and reference to directives.
+In real-life cases, you may need to pass a specific function.
+<like-book like="likeFunction()"></like-book>
+
+compile function - 
+cannot access scope
+called only once
+it is used for dom or template manipulation which doesn't involve scope
+
+link / post link function -
+manipulates dom
+attach event handlers
+sets up watchers
+
+37) $http
+The $http service is a core Angular service that facilitates communication with the remote HTTP servers via the browser's XMLHttpRequest object or via JSONP.
+
+// Simple GET request example:
+$http({
+  method: 'GET',
+  url: '/someUrl'
+}).then(function successCallback(response) {
+    // this callback will be called asynchronously
+    // when the response is available
+  }, function errorCallback(response) {
+    // called asynchronously if an error occurs
+    // or server returns response with an error status.
+  });
+
+// it comes inside "then" only if response is available!
+
+- Usually we write all server calls in the factory or service.
+- We make use of $http.get or $http.post
+- I have 3 server calls. In synchronous way, we can put the ajax calls one inside other and other but the issue is that we need to wait till all the 3 are done.So to overcome that we need to run them parallely
+- There are situations where many server calls are running parallely and response comes parallely in any order. Inorder to catch the response of the server call which we want, we use $q
+- In the factory, where we call the http, we create something like
+var defer = $q.defer();
+
+This is an object having a resolve(value), reject(reason), notify(message) / progress
+
+In the success scenario of http request, we put defer.resolve(data); which would make the .then function available of response data and that the call is completed successfully.
+
+app.factory('settings', ['$rootScope', '$http', '$q', function($rootScope, $http, $q) {
+    var deferred = $q.defer();
+
+    $http.get('/api/public/settings/get').success(function(data) {
+        deferred.resolve(data);
+    });
+
+    return deferred.promise;
+}]);
+
+app.controller('SomeCtrl', ['$scope', 'settings', function($scope, settings) {
+    settings.then(function(data){
+          $scope.settings=data;
+       })
+}]);
+
+An HTTP GET request is what you get (pardon the pun) when you enter a URI in your browser or when you click on a link on a web page. Certain HTML elements, like also generate GET requests. GET requests a resource (usually a web page or an image) from the server. You can pass additional information to a server-side script by adding 'query parameters' after the script, such as example.com?foo&bar=42.
+
+A POST request is similar to a GET request. Sending data using $http.post method
+The difference is that any additional information is sent in the body of the request, rather than as part of the URI. You can generate POST requests using elements in HTML, where the form field values are sent in the request body.
+
+A HEAD request is also similar to a GET request, but the server responds only with the HTTP headers; the response body is empty.
+
+A PUT request is a way to upload a file to a server. Most servers don't allow PUT requests, because of the security implications and update existing data in server 
+
+Similarly, a DELETE request will delete a resource on the server. Like PUT, this method is rarely permitted on server for obvious reasons.
+
+JsonP - the url must be declared, via $sce as a trusted resource URL. You can trust a URL by adding it to the whitelist via $sceDelegateProvider.resourceUrlWhitelist or by explicitly trusting the URL via $sce.trustAsResourceUrl(url).
+
+var url = "http://public-api.wordpress.com/rest/v1/sites/wtmpeachtest.wordpress.com/posts?callback=JSON_CALLBACK";
+
+$http.jsonp(url)
+    .success(function(data){
+        console.log(data.found);
+    });
+$http.get This method is used to get data from requested url
+$http.post  This method is used to send data to request url
+$http.head  This method is used to get data from requested url with headers
+$http.put This method is used to send data to specified url
+$http.delete  This method is used to delete resource from specified url
+$http.jsonp This method is used to get data from specified url in json format
+$http.patch This method is used to perform patch request from specified url
+
+JSON response is either object or array of objects
+
+38) Data Transmission through controller - 
+1)services
+2)broadcast - parent to children
+3)emit - children to parent
+4)rootscope
+
+39) Pre requisites?
+
+1)<script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js">
+</script>
+
+2)Define AngularJS Application using ng-app directive
+<div ng-app = "">
+</div>
+
+3)Step 3 − Define a model name using ng-model directive
+<p>Enter your Name: <input type = "text" ng-model = "name"></p>
+
+4)Step 4 − Bind the value of above model defined using ng-bind directive.
+<p>Hello <span ng-bind = "name"></span>!</p>
+
+40) Performance optimization
+- Minimize or avoid watchers : Angular uses dirty checking to keep track of all the changes in app. This means it will have to go through every watcher to check if they need to be updated (call the digest cycle). 
+
+- Keep track of watchers using ng-stats
+
+- Avoid keeping variables in scope unless it is used in the html for 2 way binding here
+
+- Use ng-if instead of ng-show : ng-show will render an element, and use display:none to hide it,ng-if will actually removes the element from DOM, and will re-create it, if it’s needed.
+
+41) Promises in Angular JS
+- It is an alternative for success,error functions
+- then returns a promise object, success returns just data and other params
+- then returns a promise (resolved with a value returned from a callback)  so we can use it for chaining calls ie 
+- .success() is more traditional way of registering callbacks and doesn't return a promise,the error function gives us a response and status (and more) and the success function gives us the response data (rather than the full response object).
+-The major difference between the 2 is that .then() call returns a promise (resolved with a value returned from a callback) while .success() is more traditional way of registering callbacks and doesn't return a promise.
+-Promise-based callbacks (.then()) make it easy to chain promises (do a call, interpret results and then do another call, interpret results, do yet another call etc.).
+-.success() and .error() can be chained, but they will all fire at once (so not much point to that)
+
+---------------------------------
+//Here the data status and so on comes in the form of object but 
+
+$http.get('/someURL').then(function(response) {
+    var data = response.data,
+        status = response.status,
+        header = response.header,
+        config = response.config;
+    // success handler
+}, function(response) {
+    var data = response.data,
+        status = response.status,
+        header = response.header,
+        config = response.config;
+    // error handler
+});
+
+by Using success/error:
+
+$http.get('/someURL').success(function(data, status, header, config) {
+    // success handler
+}).error(function(data, status, header, config) {
+    // error handler
+});
+
+here we have lots of params to pass for success
+---------------------------------
+$http.get('/someURL')
+.success(function(data, status, header, config) {
+    // success handler
+})
+.error(function(data, status, header, config) {
+    // error handler
+});
+
+and
+
+$http.get('/someURL')
+.then(function(response) {
+    // success handler
+}, function(response) {
+    // error handler
+})
+.then(function(response) {
+    // success handler
+}, function(response) {
+    // error handler
+})
+.then(function(response) {
+    // success handler
+}, function(response) {
+    // error handler
+}).
+------------------
+Execute a function after two Ajax requests are successful
+
+$.when( 
+  $.ajax( "/page1.php" ), $.ajax( "/page2.php" ) 
+  )
+  .done(function( a1, a2 ) {
+
+  // a1 and a2 are arguments resolved for the page1 and page2 ajax requests, respectively.
+  // Each argument is an array with the following structure: [ data, statusText, jqXHR ]
+
+  var data = a1[ 0 ] + a2[ 0 ]; // a1[ 0 ] = "Whip", a2[ 0 ] = " It"
+  if ( /Whip It/.test( data ) ) {
+    alert( "We got what we came for!" );
+  }
+});
+
+42)In a custom directive - 
+
+scope : true 
+When scope is set to “true”, AngularJS will create a new scope by inheriting parent scope ( usually controller scope, otherwise the application’s rootScope ). Any changes made to this new scope will not reflect back to the parent scope. However, since the new scope is inherited from the parent scope, any changes made in the Ctrl1 ( the parent scope ) will be reflected in the directive scope.
+
+scope : false
+When scope is set to “false”, the controller Ctrl1 and directive are using the same scope object. This means any changes to the controller or directive will be in sync.
+
+scope : {}
+This time, there will be a new scope created for the directive, but it will not be inherited from the parent scope. This new scope also known as Isolated scope because it is completely detached from its parent scope.It’ll make sure that our directive is generic, and placed anywhere inside the application. Parent scope is not going to interfere with the directive scope.
+
+scope: {
+            name: "@",
+            color: "=",
+            reverse: "&"
+        },
+
+template: [
+            "<div class='line'>",
+            "Name : <strong>{{name}}</strong>;  Change name:<input type='text' ng-model='name' /><br/>",
+            "</div><div class='line'>",
+            "Color : <strong style='color:{{color}}'>{{color|uppercase}}</strong>;  Change color:<input type='text' ng-model='color' /><br/></div>",
+            "<br/><input type='button' ng-click='reverse()' value='Reverse Name'/>"
+        ].join("")    
+
+<html>...
+Hi am {{name}}
+I am in {{color}}
+
+Inside directive
+Hi am {{name}}
+I am in {{color}}
+...</html>
+
+<script>
+ $scope.name = "Harry";
+ $scope.color = "#333333";
+</script>
+
+// above case the name changes only in the directive scope and not 2 way binding
+// color changes for both the cases
+
+43)
+<select>
+  <options ng-repeat = "item in items">{{item.name}}</option>
+</select>
+
+$scope.items = [{name : 'abc',age : 26},{name : 'efg',age : 28}];// Array of Objects
+
+<select ng-options = "item.name for item in items">
+</select>
+
+44)
+link : function(scope, element, attrs){
+          console.log(attrs.name) //myText,Notmytext
+          scope.name = attrs.name;
+},
+template : "<div>Hi {{name}} </div>"
+
+The scope of the directive is empty, we need to put values to scope using scope.name = attrs.name and then use {{name}}
+
+$compile walks through the whole template and collects all the directives that it recognizes.
+All the directives that are discovered are compiled recursively and their link functions are collected.
+Then, all the link functions are wrapped in a new link function and returned as l.
+Finally, we provide scope to this l (link) function which further executes the wrapped link functions with this scope and their corresponding elements.
+
+l(scope)
+This adds the template as a new node to the DOM and invokes controller which adds its watches to the scope which is shared with the template in DOM.
+
+return{
+      restrict : "AE",
+      scope: {
+            name: '@name',
+      },
+       transclude : true, 
+      link : function(scope,element,attr, ctrl, transclude){   
+        console.log("hi");
+        console.log(attr);
+        if(attr.name === "nonCvxDevice" || attr.name === "cvxDevice" || attr.name === "bugAffected"){
+          console.log("if");
+          element.prepend('<span class="arrow-down-cvx"></span>');
+        }else{
+          console.log("else");
+          element.prepend('<span class="arrow-down"></span>');
+        }
+        //get the transcluded element
+        // transclude(scope, function(transcludeEl) {     
+        // console.log("transcludeEl")         
+        // console.log(transcludeEl)         
+        //        element.append(transcludeEl);
+        //    }); 
+
+        element.css({
+          'position' : 'relative',
+        });
+
+        element.bind('click', function(){
+          console.log("hi"+scope.name); 
+        });
+      },
+    }
+    

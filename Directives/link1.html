@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<body ng-app="linkApp">
+<div ng-controller = "myController">
+	<div link-me></div link-me>
+	<div link-me></div link-me>
+	<div link-me></div link-me>
+</div>
+<!--Why there are scopes? Because assume a situation above where there are 3 instances of the directive and if we don't use scope then the same scope is shared across all the occurances of the directives.Then modification in one occurance will change the others as well ie all the occurances would be the same and no difference would be there as such.Therefore we need to isolate the scope using these - 
+There are 3 types in scope 
+1) scope : false
+2) scope : true
+3) scope : {}
+
+Incase of scope:true and scope:false , when the current scope is not having the value then it inherits from its superior parent ie <div> in our example which is a controller.When for example "name" is unavailable in the directive then it searches for "name" in the controller and uses it.
+
+scope:false -> it is same as not writing scope. This will not create a new scope or isolated scope for the directive occurance. Hence modification in one occurance will reflect in all as they are sharing the scope.
+
+scope:true -> it will actually create a new scope for each occurance. Modification in one occurance will not change the others
+
+scope:{} -> it will not inherit from the superior tag or parent controller in other words and is used whenever we dont want our directive to manipulate the scope elements of the controller.
+-->
+<script>
+var app = angular.module("linkApp",[]);
+app.directive("linkMe",function(){
+	//prepare an object and return it
+	return {
+		restrict : "EA",
+		
+		//scope : false,
+		//scope : true,
+		scope : {},
+		
+		link : function(scope,elem,attr){
+			scope.name = "linkName";
+			scope.changeName = function(){
+				scope.name = scope.controllerName;
+			};
+		},
+		
+		template : "<span ng-click = 'changeName()'>Hey Insider -  {{name}}</span><br />",
+	};
+});
+
+app.controller("myController",function($scope){
+	$scope.controllerName = "mYname";
+});
+
+</script>
+</body>
+</html>

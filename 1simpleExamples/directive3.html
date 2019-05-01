@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<body ng-app="myApp">
+
+<!--
+1) Used to pass attribute values or just values to the directives
+2) Using @ we cannot perform 2 way binding as we are passing {{myname}} and not myname(model).Hence div prints right value as message sent but not the input which is tied up to the model.
+-->
+
+<div ng-controller = "myController">
+
+	<!-- I have a input outside a directive -->
+	I have a input outside a directive : <input type="text" ng-model="myName" /><br/>
+
+	<replace-div name="{{myName}}"></replace-div>
+</div>
+
+<script>
+var app = angular.module("myApp", []);
+
+app.controller("myController",['$scope',function($scope){
+	$scope.myName = "myText1";
+}]);
+
+app.directive("replaceDiv",function(){
+	/**
+	*Return an object
+	*/
+	 return {
+	 	restrict : "E",
+	 	scope: {
+	 		name : '@'
+	 	},  
+        template : "<div>Hi {{name}} </div><br/>Input inside the directive<input type='text' ng-model='myName' />"
+    };
+});
+
+
+</script>
+</body>
+</html>

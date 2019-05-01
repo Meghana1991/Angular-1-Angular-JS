@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html  ng-app="promise">
+  <head>
+      <!--The Unicode Standard covers (almost) all the characters, punctuations, and symbols in the world.
+      -->
+      <meta charset="utf-8">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+      <script src="./angular.js"></script>
+  </head>
+  <body>
+      <div ng-controller = "promiseController">
+          
+      </div>
+      <div ng-controller = "promiseController1">
+          
+      </div>
+  </body>
+
+<script>
+  // Promises are nothing but objects of assurance
+  //I will create a normal promise without any http calls below - 
+
+  var prom = angular.module("promise",[]);
+  prom.controller("promiseController",['$scope',function($scope){
+  /**     $scope.myFunc = function(){
+         console.log("statement 1")
+         console.log("statement 2")
+         console.log("statement 3")
+         setTimeout(function(){
+            console.log("statement 4 time log")
+         },100);
+         $scope.printFive();
+      };
+
+      $scope.printFive = function(){
+        console.log("statement 5");
+      };
+
+      $scope.myFunc();
+      **/
+  }]);
+
+/** The Result is like
+statement 1
+statement 2
+statement 3
+statement 5
+statement 4 time log
+**/
+
+/** I want to result to be properly incremented like 1,2,3,4,5 not 5,4. In order to do this i will have to wait till the timer completes for statement 4 and then execute the statement 5.I have to receieve confirmation from 4 and then execute 5. I can do this by PROMISES
+**/
+
+/** PUT BREAKPOINTS AND CHECK THE FLOW**/
+prom.controller("promiseController1",['$scope','$q',function($scope,$q){
+      $scope.myFunc = function(){
+         console.log("statement 1")
+         console.log("statement 2")
+         console.log("statement 3")
+         var promise = $scope.printFour();
+         // Once the printFour notifies that it is resolved, then the .then is called
+         promise.then(function(){
+            $scope.printFive();
+         });
+      };
+
+      $scope.printFour = function(){
+        // To indicate that printFour is successful or not, you need to notify it by resolving the defer and returning it and only then the above function's .then gets called.
+        var deferred = $q.defer();
+        setTimeout(function(){          
+          console.log("statement 4 time log")
+          deferred.resolve();          
+        },100);
+        return deferred.promise;
+      };
+
+      $scope.printFive = function(){
+        console.log("statement 5");
+      };
+
+      $scope.myFunc();
+  }]);
+
+/** The Result is like
+statement 1
+statement 2
+statement 3
+statement 4 time log
+statement 5
+**/
+
+/**Further on
+deffered.resolve
+deffered.reject
+deffered.notify
+
+promise.then(function(){
+  //success for resolve
+},function(){
+  //error for reject
+},function(){
+  //notify for notify
+})
+
+</script>
+</html>
